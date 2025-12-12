@@ -1,0 +1,127 @@
+/* =========================
+   Global Reset & Base
+========================= */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+}
+
+/* =========================
+   Navbar Custom
+========================= */
+.custom-navbar {
+    background: linear-gradient(90deg, #2b5876, #4e4376);
+    padding: 12px 20px;
+}
+.custom-navbar .navbar-brand {
+    color: #fff !important;
+    font-size: 1.2rem;
+    letter-spacing: 0.5px;
+}
+.custom-navbar .navbar-nav .nav-link {
+    color: #e0e0e0 !important;
+    margin-left: 15px;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+    padding: 8px 15px !important;
+}
+.custom-navbar .navbar-nav .nav-link:hover {
+    background: rgba(255,255,255,0.2);
+    color: #fff !important;
+}
+.custom-navbar .navbar-nav .active {
+    background: rgba(255,255,255,0.3);
+    color: #fff !important;
+    font-weight: bold;
+}
+
+/* =========================
+   Headings & Text
+========================= */
+.text-gradient {
+    background: linear-gradient(90deg, #2b5876, #4e4376);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* =========================
+   Buttons
+========================= */
+.btn-primary {
+    background: #2b5876;
+    border: none;
+}
+.btn-primary:hover {
+    background: #4e4376;
+}
+.btn-success {
+    background: #28a745;
+    border: none;
+}
+.btn-success:hover {
+    background: #218838;
+}
+.btn-warning {
+    background: #ffc107;
+    border: none;
+    color: #000;
+}
+.btn-danger {
+    background: #dc3545;
+    border: none;
+}
+
+/* =========================
+   Tables
+========================= */
+.table {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.table thead {
+    background: #2b5876;
+    color: #fff;
+}
+.table-hover tbody tr:hover {
+    background: #f1f1f1;
+}
+
+/* =========================
+   Forms
+========================= */
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.form-label {
+    font-weight: 600;
+    color: #4e4376;
+}
+
+/* =========================
+   Cards (Index Menu)
+========================= */
+.menu-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+}
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* ==== MAIN CONTENT FIX ==== */
+.main-content {
+  margin-left: 240px; /* lebar sidebar */
+  padding: 30px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+  overflow-x: auto;
+}
+
