@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         )
     ")->fetch_assoc()['sisa'];
 
-    // kalau tidak ada sisa → ubah status pengadaan jadi selesai
+    // kalau tidak ada sisa, ubah status pengadaan jadi selesai
     if ($cek_selesai == 0) {
         $conn->query("UPDATE pengadaan SET status_pengadaan = 'Selesai' WHERE idpengadaan = $id_pengadaan");
     }
@@ -97,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- Form tambah barang penerimaan -->
 <div class="card p-4 mb-4 w-75 mx-auto shadow-sm border-0">
 <form method="POST">
     <label class="form-label fw-bold">Pilih Barang Pengadaan</label>
@@ -128,7 +127,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </form>
 </div>
 
-<!-- Tabel detail penerimaan -->
 <table class="table table-bordered text-center shadow-sm">
     <thead class="table-secondary">
         <tr>

@@ -142,7 +142,6 @@ if ($action == 'add') {
     </div>
 <?php } ?>
 
-
 <?php
 /* =======================
    VIEW DETAIL
@@ -211,11 +210,7 @@ if ($action == 'view') {
     </div>
 <?php } ?>
 
-
 <?php
-/* =======================
-   INSERT HEADER
-   ======================= */
 if ($action == 'insert') {
     $idpengadaan = (int)$_POST['idpengadaan'];
     $iduser = $_SESSION['iduser'];
@@ -231,7 +226,6 @@ if ($action == 'insert') {
     exit;
 }
 
-
 /* =======================
    FINALISASI PENERIMAAN
    ======================= */
@@ -241,20 +235,15 @@ if ($action == 'finalize') {
     // ubah status penerimaan ke selesai (Y)
     $conn->query("UPDATE penerimaan SET status='Y' WHERE idpenerimaan=$id");
 
-    // ubah status pengadaan terkait jadi 'Selesai'
-// ubah status pengadaan terkait jadi 'Selesai'
     $conn->query("
         UPDATE pengadaan 
         SET status_pengadaan='Selesai' 
         WHERE idpengadaan = (SELECT idpengadaan FROM penerimaan WHERE idpenerimaan=$id)
     ");
 
-
     header("Location: penerimaan.php?action=view&id=$id");
     exit;
 }
-
-
 
 /* =======================
    HAPUS PENERIMAAN

@@ -193,13 +193,17 @@ function tampilStok() {
    INSERT DETAIL PENJUALAN
    ======================= */
 elseif ($action == 'insert_detail') {
+
     $id = (int)$_POST['idpenjualan'];
     $barang = (int)$_POST['barang_idbarang'];
     $jumlah = (int)$_POST['jumlah'];
 
-    // ambil harga & margin dari transaksi + stok terkini dari v_stok_barang
+    // Ambil harga modal, margin aktif, dan stok
     $data = $conn->query("
-        SELECT b.harga, s.stok_terakhir AS stok, m.persen 
+        SELECT 
+            b.harga AS harga_modal,
+            m.persen AS margin,
+            s.stok_terakhir AS stok
         FROM penjualan p
         JOIN margin_penjualan m ON p.idmargin_penjualan = m.idmargin_penjualan
         JOIN barang b ON b.idbarang = $barang
@@ -208,36 +212,60 @@ elseif ($action == 'insert_detail') {
     ")->fetch_assoc();
 
     if (!$data) {
-        echo "<script>alert('❌ Data barang atau margin tidak ditemukan.');history.back();</script>";
+        echo "<script>alert('❌ Data tidak ditemukan');history.back();</script>";
         exit;
     }
 
     $stok = (int)$data['stok'];
-    $harga_modal = (int)$data['harga'];
-    $margin = (float)$data['persen'];
+    $harga_modal = (int)$data['harga_modal'];
+    $margin = (float)$data['margin'];
 
+    // Validasi stok
     if ($jumlah > $stok) {
-        echo "<script>alert('❌ Stok barang tidak mencukupi. Sisa stok: $stok');history.back();</script>";
+        echo "<script>alert('❌ Stok tidak mencukupi. Sisa stok: $stok');history.back();</script>";
         exit;
     }
 
-    $harga_jual = $harga_modal + ($harga_modal * $margin / 100);
+    // PANGGIL FUNCTION (harga jual)
+    $harga_jual = $conn->query("
+        SELECT fn_harga_jual($harga_modal, $margin) AS harga_jual
+    ")->fetch_assoc()['harga_jual'];
+
     $subtotal = $harga_jual * $jumlah;
 
+    // Insert detail penjualan
     $conn->query("
-        INSERT INTO detail_penjualan (penjualan_idpenjualan, idbarang, jumlah, harga_satuan, subtotal)
+        INSERT INTO detail_penjualan
+        (penjualan_idpenjualan, idbarang, jumlah, harga_satuan, subtotal)
         VALUES ($id, $barang, $jumlah, $harga_jual, $subtotal)
     ");
 
-    // perbarui subtotal dan total penjualan
-    $sub = $conn->query("SELECT SUM(subtotal) AS subtotal FROM detail_penjualan WHERE penjualan_idpenjualan=$id")->fetch_assoc()['subtotal'] ?? 0;
-    $ppn = $conn->query("SELECT ppn FROM penjualan WHERE idpenjualan=$id")->fetch_assoc()['ppn'] ?? 0;
-    $total = $sub + ($sub * $ppn / 100);
-    $conn->query("UPDATE penjualan SET subtotal_nilai=$sub, total_nilai=$total WHERE idpenjualan=$id");
+    // PANGGIL FUNCTION (subtotal transaksi)
+    $subtotal_penjualan = $conn->query("
+        SELECT fn_subtotal_penjualan($id) AS subtotal
+    ")->fetch_assoc()['subtotal'];
 
-    echo "<script>alert('✅ Barang berhasil ditambahkan ke penjualan.');window.location='penjualan.php?action=view&id=$id';</script>";
+    $ppn = $conn->query("
+        SELECT ppn FROM penjualan WHERE idpenjualan = $id
+    ")->fetch_assoc()['ppn'];
+
+    $total = $subtotal_penjualan + ($subtotal_penjualan * $ppn / 100);
+
+    // Update header penjualan
+    $conn->query("
+        UPDATE penjualan
+        SET subtotal_nilai = $subtotal_penjualan,
+            total_nilai = $total
+        WHERE idpenjualan = $id
+    ");
+
+    echo "<script>
+        alert('✅ Barang berhasil ditambahkan');
+        window.location='penjualan.php?action=view&id=$id';
+    </script>";
     exit;
 }
+
 
 /* =======================
    HAPUS PENJUALAN
